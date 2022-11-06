@@ -1,16 +1,15 @@
 """
 Okay so the plan is to record from the mic
-into a continuous, rolling 30 second window
 and feed that into whisper
-or just like 5 second chunks since processing time is under a second
+in 5 second chunks since processing time is under a second
+larger chunks would have better quality and less missed words
+but you sacrifice the 'real-time' feel
 """
 
 # import required libraries
 import sounddevice as sd
-from scipy.io.wavfile import write
 import wavio as wv
 import whisper
-import timeit
 import multiprocessing
 
 
@@ -55,10 +54,10 @@ def transcribe(conn, model):
         result = whisper.decode(model, mel, options)
 
         print(result.text)
-        print()
+
 
 if __name__=="__main__":
-    model = whisper.load_model("tiny")
+    model = whisper.load_model("small.en")
 
     to_mic, to_whisper = multiprocessing.Pipe()
     mic = multiprocessing.Process(target=record, args = (to_whisper,))
